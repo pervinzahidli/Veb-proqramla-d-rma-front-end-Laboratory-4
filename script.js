@@ -10,8 +10,7 @@ let resumeData = {
 };
 
 // Səhifə yüklənəndə
-document.addEventListener('DOMContentLoaded', function() {
-  // Əgər localStorage'da data varsa yüklə
+document.addEventListener('DOMContentLoaded', function () {
   const savedData = localStorage.getItem('resumeData');
   if (savedData) {
     resumeData = JSON.parse(savedData);
@@ -38,7 +37,6 @@ function saveData() {
 
 // Event listener'ləri qur
 function initializeEventListeners() {
-  // Əlavə et düymələri
   document.getElementById('add-contact').addEventListener('click', addContact);
   document.getElementById('add-education').addEventListener('click', addEducation);
   document.getElementById('add-experience').addEventListener('click', addExperience);
@@ -46,7 +44,6 @@ function initializeEventListeners() {
   document.getElementById('add-language').addEventListener('click', addLanguage);
   document.getElementById('save-all').addEventListener('click', saveData);
 
-  // Dropdown toggles
   document.getElementById('contact-heading').addEventListener('click', () => toggleDropdown('contact-dropdown'));
   document.getElementById('education-heading').addEventListener('click', () => toggleDropdown('education-dropdown'));
   document.getElementById('skills-heading').addEventListener('click', () => toggleDropdown('skills-dropdown'));
@@ -82,15 +79,22 @@ function renderContactInfo() {
   });
 }
 
+// ✅ Yalnız rəqəm qəbul edən contact əlavəetmə funksiyası
 function addContact() {
   const input = document.getElementById('new-contact');
   const text = input.value.trim();
-  if (text) {
-    resumeData.contactInfo.push(text);
-    renderContactInfo();
-    input.value = '';
-    saveData();
+
+  const isValid = /^\d+$/.test(text);
+
+  if (!isValid) {
+    alert('Zəhmət olmasa yalnız rəqəmlərdən ibarət kontakt məlumatı daxil edin!');
+    return;
   }
+
+  resumeData.contactInfo.push(text);
+  renderContactInfo();
+  input.value = '';
+  saveData();
 }
 
 // Təhsil məlumatları
@@ -233,12 +237,12 @@ function renderReference() {
 }
 
 // Silmə funksiyaları
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
   if (e.target.classList.contains('remove-btn')) {
     const index = parseInt(e.target.getAttribute('data-index'));
     const type = e.target.parentElement.querySelector('.save-btn').getAttribute('data-type');
 
-    switch(type) {
+    switch (type) {
       case 'contact':
         resumeData.contactInfo.splice(index, 1);
         renderContactInfo();
@@ -265,13 +269,13 @@ document.addEventListener('click', function(e) {
 });
 
 // Yadda saxlama funksiyası
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
   if (e.target.classList.contains('save-btn')) {
     const index = parseInt(e.target.getAttribute('data-index'));
     const type = e.target.getAttribute('data-type');
     const entry = e.target.parentElement;
 
-    switch(type) {
+    switch (type) {
       case 'contact':
         resumeData.contactInfo[index] = entry.querySelector('span').textContent.trim();
         break;
